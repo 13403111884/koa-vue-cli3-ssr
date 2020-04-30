@@ -69,8 +69,11 @@
       "parser": "babel-eslint"
     },
     "rules": {
-      "semi": [0],
-      "space-before-function-paren": 0
+      "semi": [
+        0
+      ],
+      "space-before-function-paren": 0,
+      "prettier.singleQuote": 0
     }
   },
   "browserslist": [
