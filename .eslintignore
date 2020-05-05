@@ -1,1 +1,4 @@
 server
+vue.config.js
+babel.config.js
+src/util/title.js

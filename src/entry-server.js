@@ -21,10 +21,10 @@ export default context => {
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
       // no matched routes
+      console.log(matchedComponents)
       if (!matchedComponents.length) {
         return reject({ code: 404 })
       }
-
       // 对所有匹配的路由组件调用 `asyncData()`
       Promise.all(matchedComponents.map(({ asyncData }) => asyncData && asyncData({
         store,

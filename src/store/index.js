@@ -33,6 +33,7 @@ Vue.use(Vuex)
 
 export function createStore () {
   return new Vuex.Store({
+    namespaced: true,
     state,
     mutations,
     getters: {
@@ -43,9 +44,6 @@ export function createStore () {
       Routers: state => state.routers
     },
     actions: {
-      getUserlist ({ commit }) {
-        commit('setUserlist', {})
-      },
       getMovielist ({ commit }) {
         commit('setMovielist', {})
       },

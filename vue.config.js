@@ -1,3 +1,4 @@
+const path = require('path')
 const VueSSRServerPlugin = require('vue-server-renderer/server-plugin')
 const VueSSRClientPlugin = require('vue-server-renderer/client-plugin')
 const nodeExternals = require('webpack-node-externals')
@@ -5,11 +6,28 @@ const merge = require('lodash.merge')
 const TARGET_NODE = process.env.WEBPACK_TARGET === 'node'
 const target = TARGET_NODE ? 'server' : 'client'
 const isDev = process.env.NODE_ENV !== 'production'
+
+function resolve (dir) {
+  return path.join(__dirname, dir)
+}
+
 module.exports = {
   publicPath: isDev ? 'http://127.0.0.1:8080' : 'http://127.0.0.1:3000',
   devServer: {
     historyApiFallback: true,
-    headers: { 'Access-Control-Allow-Origin': '*' }
+    headers: { 'Access-Control-Allow-Origin': '*' },
+    proxy: {
+      '^/client': {
+        target: 'http://localhost:5000',
+        // ws: true,
+        changeOrigin: true
+      },
+      '^/business': {
+        target: 'http://localhost:5000',
+        // ws: true,
+        changeOrigin: true
+      }
+    }
   },
   css: {
     extract: process.env.NODE_ENV === 'production'
@@ -50,10 +68,16 @@ module.exports = {
           optimizeSSR: false
         })
       })
-
     // fix ssr hot update bug
     if (TARGET_NODE) {
       config.plugins.delete("hmr");
     }
+
+    config.resolve.alias
+      .set('@', resolve('src'))
+      .set('@api', resolve('src/util/request.js'))
+      .set('@components', resolve('src/components'))
+      .set('@views', resolve('src/views'))
+      .set('@store', resolve('src/store'))
   }
 }
