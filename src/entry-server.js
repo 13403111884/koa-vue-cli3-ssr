@@ -8,24 +8,39 @@ export default context => {
     const { app, router, store } = createApp()
 
     const { url } = context
-    const { fullPath } = router.resolve(url).route
+    // const { fullPath } = router.resolve(url).route
 
-    if (fullPath !== url) {
-      return reject({ url: fullPath })
-    }
+    // if (fullPath !== url) {
+    //   return reject({ url: fullPath })
+    // }
 
     // 设置服务器端 router 的位置
     router.push(url)
 
     // 等到 router 将可能的异步组件和钩子函数解析完
+    console.log('asyncData0')
     router.onReady(() => {
       const matchedComponents = router.getMatchedComponents()
       // no matched routes
-      console.log(matchedComponents)
       if (!matchedComponents.length) {
         return reject({ code: 404 })
       }
       // 对所有匹配的路由组件调用 `asyncData()`
+      console.log('asyncData1')
+      // Promise.all(matchedComponents.map((Component) => {
+      //   if (Component.extendOptions.asyncData) {
+      //     const result = Component.extendOptions.asyncData({
+      //       store,
+      //       route: router.currentRoute,
+      //       options: {},
+      //     });
+      //     return result;
+      //   }
+      // })).then(() => {
+      //   // 状态将自动序列化为 window.__INITIAL_STATE__，并注入 HTML。
+      //   context.state = store.state;
+      //   resolve(app);
+      // }).catch(reject);
       Promise.all(matchedComponents.map(({ asyncData }) => asyncData && asyncData({
         store,
         route: router.currentRoute

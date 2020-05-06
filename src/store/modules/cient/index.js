@@ -10,6 +10,7 @@ export default {
   },
   actions: {
     getClient ({ commit }, item = {}) {
+      console.log(3333)
       commit('getClient', item)
     },
     addClient ({ commit }, item) {

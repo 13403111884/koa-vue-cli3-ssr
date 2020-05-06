@@ -37,19 +37,20 @@ router.onReady(() => {
     const activated = matched.filter((c, i) => {
       return diffed || (diffed = (prevMatched[i] !== c))
     })
-    const asyncDataHooks = activated.map(c => c.asyncData).filter(() => {})
-    if (!asyncDataHooks.length) {
+    if (!activated.length) {
       return next()
     }
     // 触发加载指示器
     bar.start();
-    Promise.all(asyncDataHooks.map(hook => hook({ store, route: to })))
-      .then(() => {
-        // 停止加载指示器
-        bar.finish()
-        next()
-      })
-      .catch(next)
+    Promise.all(activated.map(c => {
+      if (c.asyncData) {
+        return c.asyncData({ store, route: to })
+      }
+    })).then(() => {
+      // 停止加载指示器
+      bar.finish()
+      next()
+    }).catch(next)
   })
 
   app.$mount('#app')

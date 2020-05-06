@@ -17,7 +17,7 @@
         <Input type="text" v-model="params.industry" />
       </FormItem>
       <FormItem label="成交时间" prop="ctime">
-        <Input type="text" v-model="params.ctime" />
+        <DatePicker @on-change="DatePickerChange" type="date" show-week-numbers placeholder="请输入成交时间" style="width: 200px"></DatePicker>
       </FormItem>
       <FormItem class="fr pr20">
         <Button type="primary" @click="handleSubmit()">搜索</Button>
@@ -48,8 +48,14 @@ export default {
     ...mapMutations('Client', ['getClient']),
     async handleSubmit () {
       const params = await this.filter(this.params)
+      if (params.ctime) {
+        params.ctime = new Date(params.ctime).valueOf()
+      }
       await this.getClient({ params })
       this.$Message({ content: 'Success!' })
+    },
+    DatePickerChange (time) {
+      this.params.ctime = time
     },
     async filter (obj) {
       const params = {}
