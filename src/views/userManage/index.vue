@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Search />
+    <Search :params="params" />
 
     <Button type="primary" class="mb10" @click="basicInfo()">添加信息</Button>
 
@@ -40,6 +40,14 @@ export default {
     return {
       showImport: false,
       loading: false,
+      params: {
+        company: '',
+        name: '',
+        phone: '',
+        area: '',
+        industry: '',
+        ctime: ''
+      },
       modalData: {
         basicInfo: {
           type: 'add',
@@ -81,10 +89,31 @@ export default {
       'deleteClient'
     ]),
     pageChange (current) {
-      this.getClient({ current })
+      this.getClientList({ current })
     },
     pageSizeChange (current) {
-      this.getClient({ current })
+      this.getClientList({ current })
+    },
+    async getClientList (current) {
+      const params = await this.filter(this.params)
+      if (params.ctime) {
+        params.ctime = new Date(params.ctime).valueOf()
+      }
+      const item = { params }
+      if (current) {
+        item.current = current
+      }
+      await this.getClient(item)
+    },
+    async filter (obj) {
+      const params = {}
+      Object.keys(obj).forEach(key => {
+        if (obj[key]) {
+          console.log(key)
+          params[key] = obj[key]
+        }
+      })
+      return params
     },
     show (index) {
       this.$Modal({
@@ -96,8 +125,9 @@ export default {
     remove (id) {
       this.$Modal({
         content: '<p>是否要删除此条信息</p>',
-        onOk: () => {
-          this.deleteClient({ query: { id } })
+        onOk: async () => {
+          await this.deleteClient({ query: { id } })
+          await this.getClientList()
           this.$Message()
         },
         onCancel: () => {

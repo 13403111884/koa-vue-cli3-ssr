@@ -60,7 +60,16 @@ export default {
           } else {
             await this.editClient({ params: this.basicInfo.params })
           }
+          this.$parent.getClientList()
           this.$Message()
+          this.basicInfo.params = {
+            company: '',
+            name: '',
+            phone: '',
+            area: '',
+            industry: '',
+            remarks: ''
+          }
           this.basicInfo.loading = false
           this.basicInfo.show = false
         } else {

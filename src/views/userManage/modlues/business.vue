@@ -5,7 +5,7 @@
         <Input v-model="business.params.product" placeholder="请输入业务" />
       </FormItem>
       <FormItem label="成交时间" prop="ctime">
-        <DatePicker @on-change="DatePickerChange" type="date" show-week-numbers placeholder="请输入成交时间" style="width: 200px"></DatePicker>
+        <DatePicker @on-change="DatePickerChange" v-model="ctime" type="date" show-week-numbers placeholder="请输入成交时间" style="width: 200px"></DatePicker>
       </FormItem>
       <FormItem label="合同额" prop="amount">
         <Input type="number" @on-change="keyboard" v-model="business.params.amount" placeholder="请输入合同额" />
@@ -31,6 +31,7 @@ export default {
   },
   data () {
     return {
+      ctime: null,
       rules: {
         product: [ruleInput('请填写业务')],
         cTime: [ruleInput('请填写成交时间')],
@@ -47,14 +48,27 @@ export default {
       this.business.params.ctime = time
     },
     handleSubmit () {
-      this.$refs.business.validate(valid => {
+      if (!this.ctime) {
+        this.$Message({ type: 'error', content: '请选择成交时间' })
+        return
+      }
+      this.$refs.business.validate(async valid => {
         if (valid) {
           this.business.loading = true
           this.business.params.ctime = new Date(this.business.params.ctime).valueOf()
           this.business.params.amount = +this.business.params.amount
           this.business.params.profit = +this.business.params.profit
-          this.addBusiness({ params: this.business.params })
+          await this.addBusiness({ params: this.business.params })
+          this.$parent.getClientList()
           this.$Message()
+          this.ctime = null
+          this.business.params = {
+            companyId: null,
+            product: null,
+            cTime: null,
+            amount: null,
+            profit: null
+          }
           this.business.loading = false
           this.business.show = false
         } else {

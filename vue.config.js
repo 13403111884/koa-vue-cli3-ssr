@@ -18,12 +18,12 @@ module.exports = {
     headers: { 'Access-Control-Allow-Origin': '*' },
     proxy: {
       '^/client': {
-        target: 'http://localhost:5000',
+        target: 'http://crm.elegantwalking.com',
         // ws: true,
         changeOrigin: true
       },
       '^/business': {
-        target: 'http://localhost:5000',
+        target: 'http://crm.elegantwalking.com',
         // ws: true,
         changeOrigin: true
       }

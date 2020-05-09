@@ -9,21 +9,21 @@ export default {
     tableData: state => state.tableData
   },
   actions: {
-    getClient ({ commit }, item = {}) {
+    async getClient ({ commit }, item = {}) {
       console.log(3333)
-      commit('getClient', item)
+      return commit('getClient', item)
     },
-    addClient ({ commit }, item) {
-      commit('addClient', item)
+    async addClient ({ commit }, item) {
+      return commit('addClient', item)
     },
-    addBusiness({ commit }, item) {
-      commit('addBusiness', item)
+    async addBusiness({ commit }, item) {
+      return commit('addBusiness', item)
     },
-    editClient ({ commit }, item) {
-      commit('editClient', item)
+    async editClient ({ commit }, item) {
+      return commit('editClient', item)
     },
-    deleteClient ({ commit }, item) {
-      commit('deleteClient', item)
+    async deleteClient ({ commit }, item) {
+      return commit('deleteClient', item)
     }
   }
 }
